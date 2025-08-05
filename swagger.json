@@ -1,0 +1,139 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Deal & Rank API",
+    "version": "1.0.0",
+    "description": "API cho các thao tác liên quan đến Deal và Rank."
+  },
+  "host": "localhost:3000",
+  "basePath": "/api",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/deals": {
+      "post": {
+        "summary": "Tạo Deal mới",
+        "description": "Endpoint tạo mới một Deal. Các trường bắt buộc bao gồm title, productIDs, discountPercentage, quantity, durationInHours và createdBy.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Đối tượng Deal cần tạo",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Deal"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deal được tạo thành công",
+            "schema": {
+              "$ref": "#/definitions/Deal"
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Deal": {
+      "type": "object",
+      "required": [
+        "title",
+        "productIDs",
+        "discountPercentage",
+        "quantity",
+        "durationInHours",
+        "createdBy"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "Summer Sale Deal"
+        },
+        "productIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "5f8d0d55b54764421b7156c2"
+          ]
+        },
+        "discountPercentage": {
+          "type": "number",
+          "example": 20
+        },
+        "quantity": {
+          "type": "number",
+          "example": 100
+        },
+        "eligibleRanks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "Đồng",
+              "Bạc",
+              "Vàng",
+              "Kim Cương"
+            ]
+          },
+          "example": [
+            "Đồng",
+            "Bạc",
+            "Vàng",
+            "Kim Cương"
+          ]
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-07-01T09:00:00Z"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-07-01T15:00:00Z"
+        },
+        "durationInHours": {
+          "type": "number",
+          "example": 6
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "active",
+            "expired"
+          ],
+          "example": "pending"
+        },
+        "activatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-07-01T09:00:00Z"
+        },
+        "code": {
+          "type": "string",
+          "example": "SALE2023"
+        },
+        "createdBy": {
+          "type": "string",
+          "example": "5f8d0d55b54764421b7156d3"
+        }
+      }
+    }
+  }
+}

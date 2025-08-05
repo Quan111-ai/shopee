@@ -1,0 +1,239 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "title": "Cart API",
+      "version": "1.0.0",
+      "description": "API endpoints cho các thao tác liên quan đến Giỏ hàng."
+    },
+    "host": "localhost:3000",
+    "basePath": "/api/cart",
+    "schemes": [
+      "http"
+    ],
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "paths": {
+      "/": {
+        "get": {
+          "summary": "Lấy giỏ hàng của người dùng",
+          "description": "Trả về giỏ hàng hiện tại của người dùng.",
+          "responses": {
+            "200": {
+              "description": "Giỏ hàng được trả về thành công.",
+              "schema": {
+                "$ref": "#/definitions/Cart"
+              }
+            },
+            "404": {
+              "description": "Giỏ hàng không tồn tại hoặc rỗng."
+            }
+          }
+        }
+      },
+      "/add": {
+        "post": {
+          "summary": "Thêm sản phẩm vào giỏ hàng",
+          "description": "Thêm một sản phẩm với số lượng xác định vào giỏ hàng. Nếu sản phẩm đã tồn tại trong giỏ, số lượng sẽ được cộng dồn.",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "Thông tin sản phẩm cần thêm vào giỏ hàng",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/CartItemInput"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Sản phẩm đã được thêm và giỏ hàng trả về trạng thái cập nhật.",
+              "schema": {
+                "$ref": "#/definitions/Cart"
+              }
+            },
+            "400": {
+              "description": "Lỗi dữ liệu đầu vào."
+            }
+          }
+        }
+      },
+      "/update": {
+        "put": {
+          "summary": "Cập nhật giỏ hàng",
+          "description": "Cập nhật số lượng của một sản phẩm trong giỏ hàng.",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "Thông tin sản phẩm cần cập nhật, gồm productId và số lượng mới.",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/CartItemInput"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Giỏ hàng được cập nhật thành công.",
+              "schema": {
+                "$ref": "#/definitions/Cart"
+              }
+            },
+            "404": {
+              "description": "Không tìm thấy sản phẩm trong giỏ hàng."
+            }
+          }
+        }
+      },
+      "/remove/{productId}": {
+        "delete": {
+          "summary": "Xóa một sản phẩm khỏi giỏ hàng",
+          "description": "Xóa sản phẩm theo ID khỏi giỏ hàng của người dùng.",
+          "parameters": [
+            {
+              "name": "productId",
+              "in": "path",
+              "description": "ID của sản phẩm cần xóa",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Sản phẩm được xóa khỏi giỏ hàng thành công.",
+              "schema": {
+                "$ref": "#/definitions/Cart"
+              }
+            },
+            "404": {
+              "description": "Không tìm thấy sản phẩm trong giỏ hàng."
+            }
+          }
+        }
+      },
+      "/clear": {
+        "delete": {
+          "summary": "Xóa toàn bộ giỏ hàng",
+          "description": "Xóa tất cả các sản phẩm trong giỏ hàng của người dùng.",
+          "responses": {
+            "200": {
+              "description": "Giỏ hàng đã được xóa thành công.",
+              "schema": {
+                "$ref": "#/definitions/Cart"
+              }
+            }
+          }
+        }
+      },
+      "/checkout": {
+        "post": {
+          "summary": "Checkout giỏ hàng",
+          "description": "Thực hiện thanh toán giỏ hàng, tính tổng tiền, áp mã giảm giá (nếu có) và trả về thông tin thanh toán cuối cùng.",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "Thông tin mã giảm giá (nếu có)",
+              "required": false,
+              "schema": {
+                "$ref": "#/definitions/CheckoutInput"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Thanh toán thành công, trả về thông tin thanh toán.",
+              "schema": {
+                "$ref": "#/definitions/CheckoutOutput"
+              }
+            },
+            "400": {
+              "description": "Giỏ hàng rỗng hoặc lỗi dữ liệu."
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "Cart": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "64a1b2c3d4e5f67890123456"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/CartItem"
+            }
+          }
+        }
+      },
+      "CartItem": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "example": "5f8d0d55b54764421b7156c2"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 2
+          }
+        }
+      },
+      "CartItemInput": {
+        "type": "object",
+        "required": [
+          "productId",
+          "quantity"
+        ],
+        "properties": {
+          "productId": {
+            "type": "string",
+            "example": "5f8d0d55b54764421b7156c2"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 2
+          }
+        }
+      },
+      "CheckoutInput": {
+        "type": "object",
+        "properties": {
+          "discountCode": {
+            "type": "string",
+            "example": "SALE2023"
+          }
+        }
+      },
+      "CheckoutOutput": {
+        "type": "object",
+        "properties": {
+          "totalPrice": {
+            "type": "number",
+            "example": 199.98
+          },
+          "discountPercentage": {
+            "type": "number",
+            "example": 10
+          },
+          "discountAmount": {
+            "type": "number",
+            "example": 19.998
+          },
+          "finalPrice": {
+            "type": "number",
+            "example": 179.98
+          }
+        }
+      }
+    }
+  }

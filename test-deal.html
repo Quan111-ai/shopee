@@ -1,0 +1,61 @@
+!DOCTYPE html
+html lang=vi
+head
+  meta charset=UTF-8
+  titleTest Create Deal APItitle
+head
+body
+  h2Test Create Deal APIh2
+  form id=dealForm
+    label for=nameTên Deallabel
+    input type=text id=name name=name required brbr
+    
+    label for=discountGiảm giá (%)label
+    input type=number id=discount name=discount required brbr
+    
+    label for=startDateNgày bắt đầu (ISO format)label
+    input type=text id=startDate name=startDate placeholder=2023-05-01T000000Z required brbr
+    
+    label for=endDateNgày kết thúc (ISO format)label
+    input type=text id=endDate name=endDate placeholder=2023-05-31T235959Z required brbr
+    
+    button type=submitTạo Dealbutton
+  form
+
+  h3Kết quảh3
+  pre id=resultpre
+
+  script
+     Thay YOUR_JWT_TOKEN bằng token thực tế (lấy từ endpoint đăng nhập)
+    const jwtToken = YOUR_JWT_TOKEN; 
+
+    document.getElementById('dealForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+       Lấy dữ liệu từ form
+      const name = document.getElementById('name').value;
+      const discount = parseFloat(document.getElementById('discount').value);
+      const startDate = document.getElementById('startDate').value;
+      const endDate = document.getElementById('endDate').value;
+      
+      const data = { name, discount, startDate, endDate };
+
+      fetch(httplocalhost3000apideals, {
+        method POST,
+        headers {
+          Content-Type applicationjson,
+          Authorization Bearer  + jwtToken
+        },
+        body JSON.stringify(data)
+      })
+      .then(response = response.json())
+      .then(result = {
+        document.getElementById('result').innerText = JSON.stringify(result, null, 2);
+      })
+      .catch(error = {
+        document.getElementById('result').innerText = Error  + error;
+      });
+    });
+  script
+body
+html
